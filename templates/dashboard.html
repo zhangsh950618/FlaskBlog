@@ -33,7 +33,7 @@
             </li>
             {% endfor %}
         </ul>
-        <form action="{{ url_for("add_topic") }}">
+        <form action="{{ url_for("add_topic") }}" method= "post">
             <input type="text" name="added_topic_name">
             <button type="submit" class="btn btn-inverse btn-wide">增加</button>
         </form>
@@ -53,7 +53,7 @@
             {% endfor %}
 
         </ul>
-        <form action="{{ url_for("add_tag") }}">
+        <form action="{{ url_for("add_tag") }}" method="post">
             <input type="text" name="added_tag_name">
             <button type="submit" class="btn btn-inverse btn-wide">增加</button>
         </form>
