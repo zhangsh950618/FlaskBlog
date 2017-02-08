@@ -144,6 +144,7 @@ def upload_file():
 @app.route('/add_tag', methods=['post'])
 def add_tag():
     added_tag_name = request.form['added_tag_name']
+    print type(added_tag_name),added_tag_name
     conn = get_db()
     cur = conn.cursor()
     execute_sql_string = "insert into tag (tag_name) values(%s)"
@@ -197,6 +198,7 @@ def connect_db():
                            user="root",
                            passwd="123",
                            db="graduation",
+                           charset="utf8",
                            cursorclass=DictCursor)
     return conn
 
