@@ -17,7 +17,7 @@ app.config.update(dict(
     USERNAME='MonsterCritic',
     PASSWORD='123'
 ))
-UPLOAD_FOLDER = '/home/zsh/uploads'
+UPLOAD_FOLDER = '/home/zsh/FlaskBlog/static/uploads'
 # ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc',])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -141,7 +141,7 @@ def upload_file():
                 os.makedirs(file_dir)
             full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(full_path)
-            return "http://127.0.0.1" + full_path
+            return "http://zhangshaohua.cc/static/uploads"+filename
 
 
 @app.route('/add_tag', methods=['post'])
