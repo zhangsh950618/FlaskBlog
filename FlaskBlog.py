@@ -1,12 +1,10 @@
 # encoding=utf-8
 import os
 from flask import Flask, render_template, request, Markup, session, redirect, url_for, flash, g
-import markdown
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 import datetime
 import markdown2
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config.from_object(__name__)  # load config from this file , flaskr.py

@@ -19,6 +19,7 @@
             {% endfor %}
 
         </ul>
+        <a href = "{{ url_for('add_post') }}">写文章</a>
     {% endif %}
 
 
@@ -32,6 +33,10 @@
             </li>
             {% endfor %}
         </ul>
+        <form action="{{ url_for("add_topic") }}">
+            <input type="text" name="added_topic_name">
+            <button type="submit" class="btn btn-inverse btn-wide">增加</button>
+        </form>
     {% endif %}
 
 
@@ -48,5 +53,9 @@
             {% endfor %}
 
         </ul>
+        <form action="{{ url_for("add_tag") }}">
+            <input type="text" name="added_tag_name">
+            <button type="submit" class="btn btn-inverse btn-wide">增加</button>
+        </form>
     {% endif %}
 {% endblock %}
