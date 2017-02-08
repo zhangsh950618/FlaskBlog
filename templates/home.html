@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>this is my blog</title>
+
+    <script src="{{ url_for('static', filename = 'js/tagcanvas.min.js') }}" type="text/javascript"></script>
+    <link href="{{ url_for('static', filename = 'favicon.ico') }}" rel="shortcut icon">
+{#    <link href="https://fonts.googleapis.com/css?family=Caveat" rel="stylesheet">#}
+    <style type="text/css">
+        .img-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex; /* add */
+
+            /*flex-direction: column;*/
+            justify-content: center; /* add to align horizontal */
+            align-items: center; /* add to align vertical */
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = function () {
+            try {
+                TagCanvas.Start('myCanvas', 'tags', {
+                    textFont: 'Caveat',
+                    maxSpeed: 0.05,
+                    fadeIn: 800,
+                    textColour: '#900',
+                    textHeight: 50,
+                    outlineMethod: 'colour',
+                    outlineColour: '#039',
+                    outlineOffset: 0,
+                    depth: 0.97,
+                    minBrightness: 0.2,
+                    wheelZoom: false,
+                    reverse: true,
+                    shadowBlur: 2,
+                    shuffleTags: true,
+                    shadowOffset: [1, 1],
+                    stretchX: 1.7
+                });
+            } catch (e) {
+                // something went wrong, hide the canvas container
+                document.getElementById('myCanvasContainer').style.display = 'none';
+            }
+        };
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+<div class="img-container">
+    <canvas id="myCanvas" width="1600%" height="800%">
+        <p>Anything in here will be replaced on browsers that support the canvas element</p>
+    </canvas>
+    <!--<div class="link_div">123</div>-->
+</div>
+
+
+<div id="myCanvasContainer">
+
+</div>
+<div id="tags">
+    <ul>
+        {% for tag in tags %}
+        <li><a href= "/tag/{{ tag.tag_id }}">{{ tag.tag_name }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+</body>
+</html>

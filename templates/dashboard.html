@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>this is dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/flat-ui.min.css') }}">
+
+
+<body>
+<div class="container">
+    <nav class="navbar navbar-inverse" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-5">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <a class="navbar-brand" href="#">DashBoard</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse-5">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">All Posts</a></li>
+                <li><a href="{{ url_for('topics') }}">Topics</a></li>
+                <li><a href="{{ url_for('tags') }}">Tags Couds</a></li>
+            </ul>
+            <form class="navbar-form navbar-left" action="#" role="search">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input class="form-control" id="navbarInput-01" type="search" placeholder="Search">
+                        <span class="input-group-btn">
+                  <button type="submit" class="btn"><span class="fui-search"></span></button>
+                </span>
+                    </div>
+                </div>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">MonsterCritic<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </li>
+                <li><a href="{{ url_for("admin_logout") }}"><span class="visible-sm visible-xs">Settings<span
+                        class="fui-gear"></span></span><span class="visible-md visible-lg"><span
+                        class="fui-gear"></span></span></a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+
+        <ul>
+            {% for post in posts %}
+            <li>
+
+                <div class="todo-content">
+                    <div class="col-md-4">
+                        <h3 class="todo-name">
+                            {{ post.topic }}
+                        </h3>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="todo-name">
+                            {{ post.title }}
+                        </h3>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="todo-name">
+                            {{ post.post_time }}
+                        </h3>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+
+        </ul>
+
+</div>
+<script type="text/javascript" charset="utf-8" src="{{ url_for('static', filename = 'js/jquery-2.1.3.js') }}"></script>
+<script src="{{ url_for('static', filename = "js/flat-ui.min.js") }}"></script>
+<script src="{{ url_for('static', filename = "js/application.js") }}"></script>
+</body>
+</html>
