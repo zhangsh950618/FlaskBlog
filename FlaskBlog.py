@@ -152,6 +152,16 @@ def add_tag():
     conn.commit()
     return redirect(url_for('tags'))
 
+@app.route('/del_tag/<tag_id>', methods=['get'])
+def del_tag(tag_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("delete from tag_record where tag_id = %s", (tag_id,))
+    cur.execute("delete from tag where tag_id = %s", (tag_id,))
+    cur.close()
+    conn.commit()
+    return redirect(url_for('tags'))
+
 
 @app.route('/add_topic', methods=['post'])
 def add_topic():
@@ -160,6 +170,16 @@ def add_topic():
     cur = conn.cursor()
     execute_sql_string = "insert into topic (topic_name) values(%s)"
     cur.execute(execute_sql_string, (added_topic_name,))
+    cur.close()
+    conn.commit()
+    return redirect(url_for('topics'))
+
+@app.route('/del_topic/<topic_id>', methods=['get'])
+def del_topic(topic_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("delete from post where topic_id = %s", (topic_id,))
+    cur.execute("delete from topic where topic_id = %s", (topic_id,))
     cur.close()
     conn.commit()
     return redirect(url_for('topics'))
@@ -188,6 +208,11 @@ def add_post():
         conn.commit()
         cur.execute("select post_id from post where title = %s",(title,))
         post_id = cur.fetchone()['post_id']
+        args = []
+        for tag_id in tag_ids:
+            args.append((post_id,tag_id))
+        cur.executemany("insert into tag_record (post_id,tag_id) VALUES (%s,%s)",args)
+        conn.commit()
         return redirect(url_for("post",post_id = post_id))
 
 

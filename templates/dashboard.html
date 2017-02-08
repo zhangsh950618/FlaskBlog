@@ -30,6 +30,7 @@
                     <div class="col-md-4">
                             {{ topic.topic_name }}
                     </div>
+            <a href="{{ url_for('del_topic',topic_id = topic.topic_id) }}">删除</a>
             </li>
             {% endfor %}
         </ul>
@@ -49,6 +50,7 @@
                     <div class="col-md-4">
                             {{ tag.tag_name }}
                     </div>
+            <a href="{{ url_for('del_tag',tag_id = tag.tag_id) }}">删除</a>
             </li>
             {% endfor %}
 
