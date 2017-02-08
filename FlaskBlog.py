@@ -138,7 +138,7 @@ def upload_file():
                 os.makedirs(file_dir)
             full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(full_path)
-            return "http://zhangshaohua.cc/static/uploads"+filename
+            return "http://zhangshaohua.cc/static/uploads/"+filename
 
 
 @app.route('/add_tag', methods=['post'])
