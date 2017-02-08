@@ -81,7 +81,7 @@ def dashboard():
     cur.execute("select post.post_id,post.title,topic.topic_name from post,topic")
     posts = cur.fetchall()
     print posts
-    return render_template('dashboard.html', posts=posts,username = username)
+    return render_template('dashboard.html', posts=posts)
 
 @app.route('/topics')
 def topics():
@@ -89,7 +89,7 @@ def topics():
     cur = conn.cursor()
     cur.execute("select * from topic")
     topics = cur.fetchall()
-    return render_template('topics.html',topics = topics)
+    return render_template('dashboard.html',topics = topics)
 
 @app.route('/tags')
 def tags():
@@ -97,7 +97,7 @@ def tags():
     cur = conn.cursor()
     cur.execute("select * from tag")
     tags = cur.fetchall()
-    return render_template('tags.html',tags = tags)
+    return render_template('dashboard.html',tags = tags)
 
 
 
@@ -110,7 +110,7 @@ def tag(tag_id):
     return "hello"
 
 @app.route('/topic/<topic_id>')
-def tag(topic_id):
+def topic(topic_id):
     conn = get_db()
     cur = conn.cursor()
     cur.execute("select * from post where topic_id = %s",(topic_id,))
@@ -186,13 +186,11 @@ def add_post():
         post_time = datetime.datetime.now()
         conn = get_db()
         cur = conn.cursor()
-        cur.execute("insert into post (title,content,post_time) values (%s,%s,%s)",
-                    (title, content, post_time))
+        cur.execute("insert into post (title,content,post_time,topic_id) values (%s,%s,%s,%s)",
+                    (title, content, post_time,topic_id))
         conn.commit()
         cur.execute("select post_id from post where title = %s",(title,))
         post_id = cur.fetchone()['post_id']
-        cur.execute("insert into topic_record (post_id,topic_id) values (%s,%s)",(post_id,topic_id))
-        conn.commit()
         return redirect(url_for("post",post_id = post_id))
 
 
