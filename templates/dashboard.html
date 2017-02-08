@@ -2,7 +2,7 @@
 {%  block content %}
 
 
-    {% if posts %}
+    {% if is_posts %}
         <ul>
             {% for post in posts %}
             <li>
@@ -23,7 +23,7 @@
     {% endif %}
 
 
-    {% if topics %}
+    {% if is_topics %}
         <ul>
             {% for topic in topics %}
             <li>
@@ -42,7 +42,7 @@
 
 
 
-    {% if tags %}
+    {% if is_tags %}
         <ul>
             {% for tag in tags %}
             <li>

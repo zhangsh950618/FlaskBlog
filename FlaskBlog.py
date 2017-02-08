@@ -78,8 +78,7 @@ def dashboard():
     cur = conn.cursor()
     cur.execute("select post.post_id,post.title,topic.topic_name from post,topic")
     posts = cur.fetchall()
-    print posts
-    return render_template('dashboard.html', posts=posts)
+    return render_template('dashboard.html', posts=posts,is_posts = True)
 
 @app.route('/topics')
 def topics():
@@ -87,7 +86,7 @@ def topics():
     cur = conn.cursor()
     cur.execute("select * from topic")
     topics = cur.fetchall()
-    return render_template('dashboard.html',topics = topics)
+    return render_template('dashboard.html',topics = topics,is_topics = True)
 
 @app.route('/tags')
 def tags():
@@ -95,7 +94,7 @@ def tags():
     cur = conn.cursor()
     cur.execute("select * from tag")
     tags = cur.fetchall()
-    return render_template('dashboard.html',tags = tags)
+    return render_template('dashboard.html',tags = tags,is_tags = True)
 
 
 
