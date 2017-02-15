@@ -76,7 +76,7 @@ def dashboard():
     username = app.config['USERNAME']
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select post.post_id,post.title,topic.topic_name from post,topic")
+    cur.execute("select post.post_id,post.title,topic.topic_name from post,topic where post.topic_id = topic.topic_id")
     posts = cur.fetchall()
     return render_template('dashboard.html', posts=posts,is_posts = True)
 
@@ -102,16 +102,16 @@ def tags():
 def tag(tag_id):
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select * from tag_record WHERE tag_id = %s",(tag_id,))
-    posts_in_tag = cur.fetchall();
-    return "hello"
+    cur.execute("select * from post,tag_record WHERE post.post_id = tag_record.post_id AND tag_id = %s",(tag_id,))
+    posts_with_tag = cur.fetchall();
+    return render_template("index.html",posts_with_tag = posts_with_tag)
 
 @app.route('/topic/<topic_id>')
 def topic(topic_id):
     conn = get_db()
     cur = conn.cursor()
     cur.execute("select * from post where topic_id = %s",(topic_id,))
-    posts_in_topic = cur.fetchall();
+    posts_with_topic = cur.fetchall();
     return "hello"
 
 
