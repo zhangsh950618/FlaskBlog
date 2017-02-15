@@ -17,43 +17,46 @@
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/clean-blog.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/pygments.css') }}">
     <style>
-        .row-content{
-            margin-top:30px;
+        .row-content {
+            margin-top: 30px;
             margin-bottom: 20px;
         }
-        .row-head{
-            margin-top:50px;
+
+        .row-head {
+            margin-top: 50px;
         }
-</style>
+    </style>
 
 </head>
 
 <body>
 
 
-  <!-- Page Header -->
-  <!-- Set your background image for this header on the line below. -->
-      <div class="container">
-          <div class="row row-head">
-              <div class="col-lg-10 col-lg-offset-1 col-md-12 col-md-offset-0">
-                  <div class="post-heading">
-                      <h2 class="subheading text-center">{{ post.title}}</h2>
-                      <p class="text-right text-muted"><small>Post on {{ post.post_time }}</small></p>
-                  </div>
-              </div>
-          </div>
-          <div class="row row-content">
-                <div class="col-lg-10 col-lg-offset-1 col-md-12 col-md-offset-0">
-                    {{ post.content }}
-                </div>
-          </div>
-          <hr>
-          <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <p class="text-center copyright text-muted">Copyright &copy; zhangsh950618@gmail.com</p>
-                </div>
-          </div>
-      </div>
+<!-- Page Header -->
+<!-- Set your background image for this header on the line below. -->
+<div class="container">
+    <div class="row row-head">
+        <div class="col-lg-10 col-lg-offset-1 col-md-12 col-md-offset-0">
+            <div class="post-heading">
+                <h2 class="subheading text-center">{{ post.title }}</h2>
+                <p class="text-right text-muted">
+                    <small>Post on {{ post.post_time }}</small>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="row row-content">
+        <div class="col-lg-10 col-lg-offset-1 col-md-12 col-md-offset-0">
+            {{ post.content }}
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            <p class="text-center copyright text-muted">Copyright &copy; zhangsh950618@gmail.com</p>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>

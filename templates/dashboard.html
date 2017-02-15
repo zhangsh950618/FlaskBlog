@@ -1,40 +1,45 @@
 {% extends 'base.html' %}
-{%  block content %}
+{% block content %}
 
 
     {% if is_posts %}
         <ul>
             {% for post in posts %}
-            <li>
-                    <div class="col-md-4">
-                            {{ post.topic }}
+                <li>
+                    <div class="col-md-3">
+                        {{ post.topic_name }}
                     </div>
-                    <div class="col-md-4">
-                            {{ post.title }}
+                    <div class="col-md-3">
+                        {{ post.title }}
                     </div>
-                    <div class="col-md-4">
-                            {{ post.post_time }}
+                    <div class="col-md-3">
+                        {{ post.post_time }}
                     </div>
-            </li>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('del_post',post_id = post.post_id) }}">删除</a>
+                        <a href="">修改</a>
+                    </div>
+
+                </li>
             {% endfor %}
 
         </ul>
-        <a href = "{{ url_for('add_post') }}">写文章</a>
+        <a href="{{ url_for('add_post') }}">写文章</a>
     {% endif %}
 
 
     {% if is_topics %}
         <ul>
             {% for topic in topics %}
-            <li>
+                <li>
                     <div class="col-md-4">
-                            {{ topic.topic_name }}
+                        {{ topic.topic_name }}
                     </div>
-            <a href="{{ url_for('del_topic',topic_id = topic.topic_id) }}">删除</a>
-            </li>
+                    <a href="{{ url_for('del_topic',topic_id = topic.topic_id) }}">删除</a>
+                </li>
             {% endfor %}
         </ul>
-        <form action="{{ url_for("add_topic") }}" method= "post">
+        <form action="{{ url_for("add_topic") }}" method="post">
             <input type="text" name="added_topic_name">
             <button type="submit" class="btn btn-inverse btn-wide">增加</button>
         </form>
@@ -46,12 +51,12 @@
     {% if is_tags %}
         <ul>
             {% for tag in tags %}
-            <li>
+                <li>
                     <div class="col-md-4">
-                            {{ tag.tag_name }}
+                        {{ tag.tag_name }}
                     </div>
-            <a href="{{ url_for('del_tag',tag_id = tag.tag_id) }}">删除</a>
-            </li>
+                    <a href="{{ url_for('del_tag',tag_id = tag.tag_id) }}">删除</a>
+                </li>
             {% endfor %}
 
         </ul>

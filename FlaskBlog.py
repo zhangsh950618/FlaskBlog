@@ -38,10 +38,10 @@ def home():
 def post(post_id):
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select * from post where post_id = %s",(post_id,))
+    cur.execute("select * from post where post_id = %s", (post_id,))
     post = cur.fetchone()
     post['content'] = Markup(markdown2.markdown(text=post['content'], extras=['fenced-code-blocks'], ))
-    return render_template('post.html', post = post)
+    return render_template('post.html', post=post)
 
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -62,7 +62,7 @@ def admin_login():
             return redirect(url_for('dashboard'))
 
 
-@app.route('/logout',)
+@app.route('/logout', )
 def admin_logout():
     session.pop('logged_in', None)
     flash('You were logged out')
@@ -76,9 +76,12 @@ def dashboard():
     username = app.config['USERNAME']
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select post.post_id,post.title,topic.topic_name from post,topic where post.topic_id = topic.topic_id")
+    cur.execute("select * from post,topic where post.topic_id = topic.topic_id")
     posts = cur.fetchall()
-    return render_template('dashboard.html', posts=posts,is_posts = True)
+    # for post in posts:
+    #     print post.
+    return render_template('dashboard.html', posts=posts, is_posts=True)
+
 
 @app.route('/topics')
 def topics():
@@ -86,7 +89,8 @@ def topics():
     cur = conn.cursor()
     cur.execute("select * from topic")
     topics = cur.fetchall()
-    return render_template('dashboard.html',topics = topics,is_topics = True)
+    return render_template('dashboard.html', topics=topics, is_topics=True)
+
 
 @app.route('/tags')
 def tags():
@@ -94,23 +98,23 @@ def tags():
     cur = conn.cursor()
     cur.execute("select * from tag")
     tags = cur.fetchall()
-    return render_template('dashboard.html',tags = tags,is_tags = True)
-
+    return render_template('dashboard.html', tags=tags, is_tags=True)
 
 
 @app.route('/tag/<tag_id>')
 def tag(tag_id):
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select * from post,tag_record WHERE post.post_id = tag_record.post_id AND tag_id = %s",(tag_id,))
+    cur.execute("select * from post,tag_record WHERE post.post_id = tag_record.post_id AND tag_id = %s", (tag_id,))
     posts_with_tag = cur.fetchall();
-    return render_template("index.html",posts_with_tag = posts_with_tag)
+    return render_template("index.html", posts_with_tag=posts_with_tag)
+
 
 @app.route('/topic/<topic_id>')
 def topic(topic_id):
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("select * from post where topic_id = %s",(topic_id,))
+    cur.execute("select * from post where topic_id = %s", (topic_id,))
     posts_with_topic = cur.fetchall();
     return "hello"
 
@@ -138,7 +142,7 @@ def upload_file():
                 os.makedirs(file_dir)
             full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(full_path)
-            return "http://zhangshaohua.cc/static/uploads/"+filename
+            return "http://zhangshaohua.cc/static/uploads/" + filename
 
 
 @app.route('/add_tag', methods=['post'])
@@ -151,6 +155,18 @@ def add_tag():
     cur.close()
     conn.commit()
     return redirect(url_for('tags'))
+
+
+@app.route('/del_post/<post_id>', methods=['get'])
+def del_post(post_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("delete from tag_record where post_id = %s", (post_id,))
+    cur.execute("delete from post where post_id = %s", (post_id,))
+    cur.close()
+    conn.commit()
+    return redirect(url_for('dashboard'))
+
 
 @app.route('/del_tag/<tag_id>', methods=['get'])
 def del_tag(tag_id):
@@ -173,6 +189,7 @@ def add_topic():
     cur.close()
     conn.commit()
     return redirect(url_for('topics'))
+
 
 @app.route('/del_topic/<topic_id>', methods=['get'])
 def del_topic(topic_id):
@@ -204,16 +221,16 @@ def add_post():
         conn = get_db()
         cur = conn.cursor()
         cur.execute("insert into post (title,content,post_time,topic_id) values (%s,%s,%s,%s)",
-                    (title, content, post_time,topic_id))
+                    (title, content, post_time, topic_id))
         conn.commit()
-        cur.execute("select post_id from post where title = %s",(title,))
+        cur.execute("select post_id from post where title = %s", (title,))
         post_id = cur.fetchone()['post_id']
         args = []
         for tag_id in tag_ids:
-            args.append((post_id,tag_id))
-        cur.executemany("insert into tag_record (post_id,tag_id) VALUES (%s,%s)",args)
+            args.append((post_id, tag_id))
+        cur.executemany("insert into tag_record (post_id,tag_id) VALUES (%s,%s)", args)
         conn.commit()
-        return redirect(url_for("post",post_id = post_id))
+        return redirect(url_for("post", post_id=post_id))
 
 
 def connect_db():

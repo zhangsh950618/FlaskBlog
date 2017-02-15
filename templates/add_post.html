@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <meta charset="UTF-8">
     <link href="{{ url_for('static', filename = 'favicon.ico') }}" rel="shortcut icon">
-        <script type="text/javascript" charset="utf-8"
+    <script type="text/javascript" charset="utf-8"
             src="{{ url_for('static', filename = 'js/jquery-2.1.3.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename = 'css/thinker-md.vendor.css') }}">
     <script type="text/javascript" charset="utf-8"
@@ -83,18 +83,18 @@
 </div>
 </body>
 <script>
-        $("textarea").markdown({
-            language: 'zh',
-            fullscreen: {
-                enable: true
-            },
-            resize: 'vertical',
-            localStorage: 'md',
-            imgurl: '/c/imgUpload',
-            base64url: '/c/imgUpload',
-            flowChart: true
-        });
-    </script>
+    $("textarea").markdown({
+        language: 'zh',
+        fullscreen: {
+            enable: true
+        },
+        resize: 'vertical',
+        localStorage: 'md',
+        imgurl: '/c/imgUpload',
+        base64url: '/c/imgUpload',
+        flowChart: true
+    });
+</script>
 </html>
 
 

@@ -12,84 +12,87 @@
     <title>Clean Blog</title>
 
     <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/vendor/bootstrap/css/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/vendor/bootstrap/css/bootstrap.min.css') }}">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/clean-blog.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/vendor/font-awesome/css/font-awesome.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/clean-blog.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename = 'css/vendor/font-awesome/css/font-awesome.min.css') }}">
     <!-- Theme CSS -->
     <!-- Custom Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet'
+          type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+          rel='stylesheet' type='text/css'>
 </head>
 
 <body>
 
-    <!-- Main Content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                {% for post_with_tag in posts_with_tag%}
+<!-- Main Content -->
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+            {% for post_with_tag in posts_with_tag %}
                 <div class="post-preview">
-                    <a href="{{ url_for('post',post_id = post_with_tag.post_id )}}">
+                    <a href="{{ url_for('post',post_id = post_with_tag.post_id ) }}">
                         <h2 class="post-title">
                             {{ post_with_tag.title }}
                         </h2>
-{#                        <h3 class="post-subtitle">#}
-{#                            {{ post_with_tag.content[:50] }}#}
-{#                        </h3>#}
+                        {#                        <h3 class="post-subtitle">#}
+                        {#                            {{ post_with_tag.content[:50] }}#}
+                        {#                        </h3>#}
                     </a>
                     <p class="post-meta">Posted by <a href="#">zhangshaohua</a>{{ post_with_tag.post_time }}</p>
                 </div>
                 <hr>
-                {% endfor %}
-                <!-- Pager -->
-                <ul class="pager">
-                    <li class="next">
-                        <a href="#">Older Posts &rarr;</a>
-                    </li>
-                </ul>
-            </div>
+            {% endfor %}
+            <!-- Pager -->
+            <ul class="pager">
+                <li class="next">
+                    <a href="#">Older Posts &rarr;</a>
+                </li>
+            </ul>
         </div>
     </div>
+</div>
 
-    <hr>
+<hr>
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <ul class="list-inline text-center">
-                        <li>
-                            <a href="#">
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    <li>
+                        <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
                                 <span class="fa-stack fa-lg">
                                     <i class="fa fa-circle fa-stack-2x"></i>
                                     <i class="fa fa-github fa-stack-1x fa-inverse"></i>
                                 </span>
-                            </a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>
-                </div>
+                        </a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted">Copyright &copy; Your Website 2016</p>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
 
 {#    <!-- jQuery -->#}
 {#    <script src="vendor/jquery/jquery.min.js"></script>#}

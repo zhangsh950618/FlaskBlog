@@ -70,7 +70,7 @@
 <div id="tags">
     <ul>
         {% for tag in tags %}
-        <li><a href= "{{ url_for('tag',tag_id = tag.tag_id) }}">{{ tag.tag_name }}</a></li>
+            <li><a href="{{ url_for('tag',tag_id = tag.tag_id) }}">{{ tag.tag_name }}</a></li>
         {% endfor %}
     </ul>
 </div>
