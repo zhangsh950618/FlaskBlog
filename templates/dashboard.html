@@ -17,7 +17,7 @@
                     </div>
                     <div class="col-md-3">
                         <a href="{{ url_for('del_post',post_id = post.post_id) }}">删除</a>
-                        <a href="">修改</a>
+                        <a href="{{ url_for('update_post',post_id = post.post_id) }}">修改</a>
                     </div>
 
                 </li>

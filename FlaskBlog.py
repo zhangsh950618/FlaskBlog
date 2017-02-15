@@ -233,6 +233,43 @@ def add_post():
         return redirect(url_for("post", post_id=post_id))
 
 
+@app.route('/update_post/<post_id>', methods=['GET', 'POST'])
+def update_post(post_id):
+    if request.method == 'GET':
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("select * from tag")
+        tags = cur.fetchall()
+        cur.execute("select * from topic")
+        topics = cur.fetchall()
+        cur.execute("select * from post where post_id=%s",(post_id,))
+        post = cur.fetchone()
+        cur.execute("delete from tag_record where post_id=%s",(post_id,))
+        return render_template("update_post.html", tags=tags, topics=topics,post = post)
+    if request.method == 'POST':
+        title = request.form['title']
+        content = request.form['content']
+        tag_ids = request.form.getlist('tag_ids')
+        topic_id = request.form['topic_id']
+        post_time = datetime.datetime.now()
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("update post set title=%s,content=%s,post_time=%s,topic_id=%s WHERE post_id=%s",
+                    (title, content, post_time, topic_id, post_id))
+        conn.commit()
+        # cur.execute("select post_id from post where title = %s", (title,))
+        # post_id = cur.fetchone()['post_id']
+        args = []
+        for tag_id in tag_ids:
+            args.append((post_id, tag_id))
+        cur.executemany("insert into tag_record (post_id,tag_id) VALUES (%s,%s)", args)
+        conn.commit()
+        return redirect(url_for("post", post_id=post_id))
+
+
+
+
+
 def connect_db():
     """Connects to the specific database."""
     conn = MySQLdb.connect(host="127.0.0.1",
