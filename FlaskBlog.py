@@ -245,6 +245,7 @@ def update_post(post_id):
         cur.execute("select * from post where post_id=%s",(post_id,))
         post = cur.fetchone()
         cur.execute("delete from tag_record where post_id=%s",(post_id,))
+        conn.commit()
         return render_template("update_post.html", tags=tags, topics=topics,post = post)
     if request.method == 'POST':
         title = request.form['title']
