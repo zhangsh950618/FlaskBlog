@@ -5,6 +5,10 @@ import MySQLdb
 from MySQLdb.cursors import DictCursor
 import datetime
 import markdown2
+import sys
+reload(sys)
+sys.setdefaultencoding( "utf-8" )
+
 
 app = Flask(__name__)
 app.config.from_object(__name__)  # load config from this file , flaskr.py
