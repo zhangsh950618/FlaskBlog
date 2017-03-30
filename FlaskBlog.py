@@ -141,7 +141,7 @@ def upload_file():
         if file:
             file_dir = os.path.join(app.config['UPLOAD_FOLDER'])
             now = datetime.datetime.now()
-            filename = str(now) + file.filename
+            filename = unicode(now) + unicode(file.filename)
             if not os.path.exists(file_dir):
                 os.makedirs(file_dir)
             full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
