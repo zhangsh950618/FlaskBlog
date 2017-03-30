@@ -141,11 +141,14 @@ def upload_file():
         if file:
             file_dir = os.path.join(app.config['UPLOAD_FOLDER'])
             now = datetime.datetime.now()
-            print type(file.filename)
+
             filename = str(now) + file.filename
             if not os.path.exists(file_dir):
                 os.makedirs(file_dir)
             full_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            # print type(full_path)
+            full_path = full_path.encode('utf-8')
+            # print type(full_path)
             file.save(full_path)
             return "http://zhangshaohua.cc/static/uploads/" + filename
 
