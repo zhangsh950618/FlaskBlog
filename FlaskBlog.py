@@ -5,10 +5,12 @@ import MySQLdb
 from MySQLdb.cursors import DictCursor
 import datetime
 import markdown2
+import jieba.analyse as analyse
+import jieba.posseg as pseg
 import sys
-reload(sys)
-sys.setdefaultencoding( "utf-8" )
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 app = Flask(__name__)
 app.config.from_object(__name__)  # load config from this file , flaskr.py
@@ -44,7 +46,7 @@ def post(post_id):
     cur = conn.cursor()
     cur.execute("select * from post where post_id = %s", (post_id,))
     post = cur.fetchone()
-    post['content'] = Markup(markdown2.markdown(text=post['content'], extras=['fenced-code-blocks'], ))
+    post['content'] = Markup(markdown2.markdown(text=post['content'], extras=['fenced-code-blocks', 'tables'], ))
     return render_template('post.html', post=post)
 
 
@@ -210,6 +212,21 @@ def del_topic(topic_id):
     return redirect(url_for('topics'))
 
 
+@app.route('/graduation/single', methods=['GET', 'POST'])
+def single():
+    if request.method == 'GET':
+        print "get"
+        return render_template("graduation.html")
+    if request.method == 'POST':
+        print "post"
+        content = request.form['content']
+        seg_list = [(word, flag) for word,flag in pseg.cut(content)]
+        key_list = analyse.textrank(content, topK=20, withWeight=True, allowPOS=('nr','ns', 'n', 'vn', 'v'))
+        # print key_list
+        # print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
+        return render_template("graduation.html", seg_list=seg_list, key_list = key_list)
+
+
 @app.route('/add_post', methods=['GET', 'POST'])
 def add_post():
     if request.method == 'GET':
@@ -250,11 +267,11 @@ def update_post(post_id):
         tags = cur.fetchall()
         cur.execute("select * from topic")
         topics = cur.fetchall()
-        cur.execute("select * from post where post_id=%s",(post_id,))
+        cur.execute("select * from post where post_id=%s", (post_id,))
         post = cur.fetchone()
-        cur.execute("delete from tag_record where post_id=%s",(post_id,))
+        cur.execute("delete from tag_record where post_id=%s", (post_id,))
         conn.commit()
-        return render_template("update_post.html", tags=tags, topics=topics,post = post)
+        return render_template("update_post.html", tags=tags, topics=topics, post=post)
     if request.method == 'POST':
         title = request.form['title']
         content = request.form['content']
@@ -274,9 +291,6 @@ def update_post(post_id):
         cur.executemany("insert into tag_record (post_id,tag_id) VALUES (%s,%s)", args)
         conn.commit()
         return redirect(url_for("post", post_id=post_id))
-
-
-
 
 
 def connect_db():

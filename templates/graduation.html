@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>graduation</title>
+</head>
+<body>
+    graduation
+<form action = "" method="post">
+    <textarea name = "content" placeholder="input some text and service for you"></textarea>
+    <input type = "submit" value="submit"/>
+</form>
+{% for word, flag in seg_list %}
+    {{ word }} :{{ flag }}/
+{% endfor %}
+<br><br>
+{% for keyword, value in key_list %}
+    {{ keyword }} :{{ value }}/
+{% endfor %}
+</body>
+</html>
