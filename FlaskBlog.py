@@ -220,11 +220,12 @@ def single():
     if request.method == 'POST':
         print "post"
         content = request.form['content']
-        seg_list = [(word, flag) for word,flag in pseg.cut(content)]
-        key_list = analyse.textrank(content, topK=20, withWeight=True, allowPOS=('nr','ns', 'n', 'vn', 'v'))
+        seg_list = [(word, flag) for word, flag in pseg.cut(content)]
+        textrank_key_list = analyse.textrank(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
+        tf_idf_key_list = analyse.tfidf(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
         # print key_list
         # print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
-        return render_template("graduation.html", seg_list=seg_list, key_list = key_list)
+        return render_template("graduation.html", seg_list=seg_list, textrank_key_list=textrank_key_list, tf_idf_key_list=tf_idf_key_list)
 
 
 @app.route('/add_post', methods=['GET', 'POST'])

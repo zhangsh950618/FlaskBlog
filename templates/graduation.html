@@ -13,8 +13,16 @@
 {% for word, flag in seg_list %}
     {{ word }} :{{ flag }}/
 {% endfor %}
+
 <br><br>
-{% for keyword, value in key_list %}
+textrank算法提取特征：
+{% for keyword, value in textrank_key_list %}
+    {{ keyword }} :{{ value }}/
+{% endfor %}
+
+    <br><br>
+tf-idf算法提取特征:
+{% for keyword, value in tf_idf_key_list %}
     {{ keyword }} :{{ value }}/
 {% endfor %}
 </body>
