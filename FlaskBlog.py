@@ -8,6 +8,9 @@ import markdown2
 import jieba.analyse as analyse
 import jieba.posseg as pseg
 import sys
+from analyse import sentiment
+from snownlp import SnowNLP
+import math
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -106,7 +109,6 @@ def tags():
     tags = cur.fetchall()
     return render_template('dashboard.html', tags=tags, is_tags=True)
 
-
 @app.route('/tag/<tag_id>')
 def tag(tag_id):
     conn = get_db()
@@ -114,6 +116,10 @@ def tag(tag_id):
     cur.execute("select * from post,tag_record WHERE post.post_id = tag_record.post_id AND tag_id = %s", (tag_id,))
     posts_with_tag = cur.fetchall();
     return render_template("index.html", posts_with_tag=posts_with_tag)
+
+@app.route('/temp')
+def temp():
+    return render_template("template.html")
 
 
 @app.route('/topic/<topic_id>')
@@ -223,9 +229,20 @@ def single():
         seg_list = [(word, flag) for word, flag in pseg.cut(content)]
         textrank_key_list = analyse.textrank(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
         tf_idf_key_list = analyse.tfidf(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
+        s = sentiment.Sentiment()
+        sentiment_score = s.single_review_sentiment_score(content)
+        sentiment_score = math.atan(sentiment_score) * 2 / math.pi
+        s = SnowNLP(content)
+        summary = s.summary(3)
         # print key_list
         # print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
-        return render_template("graduation.html", seg_list=seg_list, textrank_key_list=textrank_key_list, tf_idf_key_list=tf_idf_key_list)
+        return render_template("graduation.html",
+                               seg_list=seg_list,
+                               textrank_key_list=textrank_key_list,
+                               tf_idf_key_list=tf_idf_key_list,
+                               sentiment_score=sentiment_score,
+                               summary=summary,
+                               )
 
 
 @app.route('/add_post', methods=['GET', 'POST'])
