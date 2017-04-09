@@ -8,7 +8,7 @@ import markdown2
 import jieba.analyse as analyse
 import jieba.posseg as pseg
 import sys
-from analyse import sentiment
+# from analyse import sentiment
 from snownlp import SnowNLP
 import math
 
