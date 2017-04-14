@@ -8,9 +8,16 @@ import markdown2
 import jieba.analyse as analyse
 import jieba.posseg as pseg
 import sys
-# from analyse import sentiment
+from analyse import sentiment
 from snownlp import SnowNLP
 import math
+import re
+from dao.blog_dao import BlogDao
+import sys
+from dao.comment_dao import *
+from analyse.sentiment import *
+import numpy as np
+from analyse import cluster
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -109,6 +116,7 @@ def tags():
     tags = cur.fetchall()
     return render_template('dashboard.html', tags=tags, is_tags=True)
 
+
 @app.route('/tag/<tag_id>')
 def tag(tag_id):
     conn = get_db()
@@ -116,6 +124,7 @@ def tag(tag_id):
     cur.execute("select * from post,tag_record WHERE post.post_id = tag_record.post_id AND tag_id = %s", (tag_id,))
     posts_with_tag = cur.fetchall();
     return render_template("index.html", posts_with_tag=posts_with_tag)
+
 
 @app.route('/temp')
 def temp():
@@ -218,31 +227,127 @@ def del_topic(topic_id):
     return redirect(url_for('topics'))
 
 
-@app.route('/graduation/single', methods=['GET', 'POST'])
+@app.route('/single', methods=['GET', 'POST'])
 def single():
+    content = u""
     if request.method == 'GET':
-        print "get"
-        return render_template("graduation.html")
+        content = u"12日上午，国家主席习近平同美国总统特朗普通电话。两国元首就朝鲜半岛局势等共同关心的问题交换了意见。习近平强调，中方坚持实现半岛无核化目标，坚持维护半岛和平稳定，主张通过和平方式解决问题，愿同美方就半岛问题保持沟通协调。关于叙利亚问题，习近平指出，任何使用化学武器的行为都不可接受。叙利亚问题要坚持政治解决的方向。联合国安理会保持团结对解决叙利亚问题非常重要，希望安理会发出一致声音。两国元首同意通过各种方式保持密切联系。"
     if request.method == 'POST':
-        print "post"
         content = request.form['content']
-        seg_list = [(word, flag) for word, flag in pseg.cut(content)]
-        textrank_key_list = analyse.textrank(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
-        tf_idf_key_list = analyse.tfidf(content, topK=20, withWeight=True, allowPOS=('nr', 'ns', 'n', 'vn', 'v'))
-        s = sentiment.Sentiment()
-        sentiment_score = s.single_review_sentiment_score(content)
-        sentiment_score = math.atan(sentiment_score) * 2 / math.pi
-        s = SnowNLP(content)
-        summary = s.summary(3)
-        # print key_list
-        # print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
-        return render_template("graduation.html",
-                               seg_list=seg_list,
-                               textrank_key_list=textrank_key_list,
-                               tf_idf_key_list=tf_idf_key_list,
-                               sentiment_score=sentiment_score,
-                               summary=summary,
-                               )
+    content = re.sub(u'(\s|\n|t)', u'', content)
+    print content
+    seg_list = [(word, flag) for word, flag in pseg.cut(content)]
+    textrank_key_list = analyse.textrank(content, topK=5, withWeight=True)
+    tf_idf_key_list = analyse.tfidf(content, topK=5, withWeight=True)
+    s = sentiment.Sentiment()
+    sentiment_score = s.single_review_sentiment_score(content)
+    sentiment_score_up = (math.atan(sentiment_score) * 2 / math.pi + 1) / 2 * 100
+    sentiment_score_down = 100 - sentiment_score_up
+    s = SnowNLP(content)
+    summary = s.summary(3)
+    # print key_list
+    # print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
+    return render_template("single.html",
+                           seg_list=seg_list,
+                           textrank_key_list=textrank_key_list,
+                           tf_idf_key_list=tf_idf_key_list,
+                           sentiment_score_up=sentiment_score_up,
+                           sentiment_score_down=sentiment_score_down,
+                           summary=summary,
+                           content=content,
+                           )
+
+
+@app.route('/multi', methods=['GET', 'POST'])
+def multi():
+    b_dao = BlogDao()
+    blogs = b_dao.search_blogs_with_limit(["郑爽"], 10)
+    data = [[int(blog[5]), int(blog[6]), int(blog[7])] for blog in b_dao.search_blogs_with_limit(["郑爽"], 200)]
+
+    return render_template("multi.html",
+                           blogs=blogs,
+                           data=data, )
+
+
+@app.route('/topic1', methods=['GET', 'POST'])
+def topic1():
+    b_dao = BlogDao()
+    c_dao = CommentDao()
+    senti = Sentiment()
+    blogs = b_dao.search_blogs_with_limit(["郑爽", "Yeah虚拟小号"], 15)
+    data = [[int(blog[5]), int(blog[6]), int(blog[7])] for blog in
+            b_dao.search_blogs_with_limit(["郑爽", "Yeah虚拟小号"], 150)]
+    all_blog_entities = cluster.get_classfied_blogs(["Yeah虚拟小号"], 2500, 0.5, 15)
+    all_blog_entities.sort(key=lambda obj: max(obj, key=lambda ob: ob.get_hot_point()).get_post_time())
+    scores = []
+    post_times = []
+    linechartdata = []
+    for blog_entity in all_blog_entities:
+        blog_ids = []
+        for blog in blog_entity:
+            blog_ids.append(blog.get_blog_id())
+        comments = c_dao.search_all_comments_with_ids(blog_ids)
+        score = 0
+        for comment in comments:
+            score += senti.single_review_sentiment_score(comment[3])
+        most_hot_blog = max(blog_entity, key=lambda obj: obj.get_hot_point())
+        # score /= len(comments)
+        scores.append(score)
+    for index, blog_entity in enumerate(all_blog_entities):
+        most_hot_blog = max(blog_entity, key=lambda obj: obj.get_hot_point())
+        post_times.append(str(most_hot_blog.get_post_time()))
+        print most_hot_blog.get_post_time(), most_hot_blog.get_blog_info(), scores[index]
+        # print type(str(most_hot_blog.get_blog_info()))
+        linechartdata.append({'info': most_hot_blog.get_blog_info(), 'y': scores[index]})
+    linechartdata = str(linechartdata).replace('u\'', '\'').decode("unicode-escape")
+    topic_name = "郑爽"
+    return render_template("topic1.html",
+                           blogs=blogs,
+                           data=data,
+                           post_times=post_times,
+                           linechartdata=linechartdata,
+                           topic_name=topic_name)
+
+
+@app.route('/topic2', methods=['GET', 'POST'])
+def topic2():
+    all_blog_entities = cluster.get_classfied_blogs(["央视春节联欢晚会"], 2500, 0.5, 15)
+    print "get"
+    b_dao = BlogDao()
+    c_dao = CommentDao()
+    senti = Sentiment()
+    blogs = b_dao.search_blogs_with_limit(["央视春节联欢晚会"], 15)
+    data = [[int(blog[5]), int(blog[6]), int(blog[7])] for blog in b_dao.search_blogs_with_limit(["央视春节联欢晚会"], 150)]
+    all_blog_entities.sort(key=lambda obj: max(obj, key=lambda ob: ob.get_hot_point()).get_post_time())
+    scores = []
+    post_times = []
+    linechartdata = []
+    for blog_entity in all_blog_entities:
+        blog_ids = []
+        for blog in blog_entity:
+            blog_ids.append(blog.get_blog_id())
+        comments = c_dao.search_all_comments_with_ids(blog_ids)
+        score = 0
+        for comment in comments:
+            score += senti.single_review_sentiment_score(comment[3])
+        most_hot_blog = max(blog_entity, key=lambda obj: obj.get_hot_point())
+        # score /= len(comments)
+        scores.append(score)
+
+    for index, blog_entity in enumerate(all_blog_entities):
+        most_hot_blog = max(blog_entity, key=lambda obj: obj.get_hot_point())
+        post_times.append(str(most_hot_blog.get_post_time()))
+        print most_hot_blog.get_post_time(), most_hot_blog.get_blog_info(), scores[index]
+        # print type(str(most_hot_blog.get_blog_info()))
+        linechartdata.append({'info': most_hot_blog.get_blog_info(), 'y': scores[index]})
+    linechartdata = str(linechartdata).replace('u\'', '\'').decode("unicode-escape")
+    topic_name = "央视春节联欢晚会"
+    return render_template("topic2.html",
+                           blogs=blogs,
+                           data=data,
+                           post_times=post_times,
+                           linechartdata=linechartdata,
+                           topic_name=topic_name)
 
 
 @app.route('/add_post', methods=['GET', 'POST'])

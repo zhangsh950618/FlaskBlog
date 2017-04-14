@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename = "js/jquery-2.1.3.js") }}"></script>
+    <script src="{{ url_for('static', filename = "js/bootstrap.min.js") }}"></script>
+    <link href="{{ url_for('static', filename = 'favicon.ico') }}" rel="shortcut icon">
+    <title>graduation</title>
+    <style>
+        .chunk {
+            background-color: #f6f6f6;
+            overflow: hidden;
+        }
+
+        .bs-sidebar.col-xs-3 {
+            padding: 0;
+            width: 210px;
+        }
+
+        .col-xs-9 .chunk {
+            position: relative;
+            margin-bottom: 20px;
+            padding: 30px 20px;
+            min-height: 300px;
+        }
+
+        ul.nav-tabs {
+            width: 200px;
+            margin-top: 20px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.067);
+        }
+
+        ul.nav-tabs li {
+            margin: 0;
+            border-top: 1px solid #ddd;
+        }
+
+        ul.nav-tabs li:first-child {
+            border-top: none;
+        }
+
+        ul.nav-tabs li a {
+            margin: 0;
+            padding: 8px 16px;
+            border-radius: 0;
+        }
+
+        ul.nav-tabs li.active a, ul.nav-tabs li.active a:hover {
+            color: #fff;
+            background: #0088cc;
+            border: 1px solid #0088cc;
+        }
+
+        ul.nav-tabs li:first-child a {
+            border-radius: 4px 4px 0 0;
+        }
+
+        ul.nav-tabs li:last-child a {
+            border-radius: 0 0 4px 4px;
+        }
+
+        ul.nav-tabs.affix {
+            top: 45px; /* Set the top position of pinned element */
+        }
+
+        .words {
+            margin-top: 20px;
+        }
+
+        dd {
+            display: inline-block;
+            padding: 0 11px;
+            height: 26px;
+            font-size: 14px;
+            line-height: 26px;
+            margin: 0 5px 5px 0;
+        }
+
+        .v {
+            background-color: #ffcb99;
+        }
+
+        .vn {
+            background-color: #ffcb99;
+        }
+
+        .i {
+            background-color: #c7aee7;
+        }
+
+        .d {
+            background-color: #ffcccb;
+        }
+
+        .ns {
+            background-color: #d07f7f;
+        }
+
+        .x {
+            background-color: #ccc;
+        }
+
+        .m {
+            background-color: #986699;
+        }
+
+        .uj {
+            background-color: #4dd9e6;
+        }
+
+        .n {
+            background-color: #488fce;
+        }
+
+        .ng {
+            background-color: #488fce;
+        }
+
+        .nz {
+            background-color: #757fce;
+        }
+
+        .nr {
+            background-color: #f16e42;
+        }
+
+        .nrfg{
+            background-color: #f16e42;
+        }
+
+        .p {
+            background-color: #99cc67;
+        }
+        .nt{
+            background-color: #00A000;
+        }
+
+        .f {
+            background-color: #c9aaca;
+        }
+
+        .eng {
+            background-color: #96dbf8;
+        }
+
+        .c {
+            background-color: #8ea4de;
+        }
+
+        .t {
+            background-color: #c7aee7;
+        }
+
+        .r {
+            background-color: #9acccd;
+        }
+
+        .a {
+            background-color: #67ccaa;
+
+        }
+        .ul{
+                background-color: #f48363;
+        }
+
+        .l{
+            background-color: #2a6496;
+        }
+    </style>
+</head>
+
+
+<body data-spy="scroll" data-target="#myScrollspy">
+
+
+<div class="navbar navbar-default ">
+    <!-- 定义个内部框架表现的基调,位置大小背景等 -->
+    <div class="navbar-inner">
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{{ url_for('single') }}">单文本</a></li>
+                <li><a href="{{ url_for('multi') }}">多文本</a></li>
+                <li><a href="{{ url_for('topic1') }}">话题1郑爽</a></li>
+                <li><a href="{{ url_for('topic2') }}">话题2春晚</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{#<div id="fix-for-navbar-fixed-top-spacing" style="height: 70px;">&nbsp;</div>#}
+<div class="container  center ">
+    <div class="row">
+        <form role="form" action="" method="post">
+            <div class="form-group">
+                <label>单文本演示</label>
+                <textarea name="content" placeholder="input some text and service for you" class="form-control"
+                          rows="10">{{ content }}</textarea>
+                <button type="submit" class="btn btn-default pull-right">提交</button>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-xs-3 bs-sidebar" id="myScrollspy">
+
+            <ul class="nav nav-tabs nav-stacked" data-spy="affix" data-offset-top="250">
+                <li class="active">
+                    <a href="#section-1">分词结果</a>
+                </li>
+                <li>
+                    <a href="#section-2">实体识别</a>
+                </li>
+                <li>
+                    <a href="#section-3">textrank特征提取</a>
+                </li>
+                <li>
+                    <a href="#section-4">tf-idf算法提取特征</a>
+                </li>
+                <li>
+                    <a href="#section-5">情感分析</a>
+                </li>
+{#                <li>#}
+{#                    <a href="#section-6">自动摘要</a>#}
+{#                </li>#}
+            </ul>
+        </div>
+        <div class="col-xs-9">
+            <div class="chunk" id="section-1">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="title">
+                            分词结果
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-9">
+                        <dl class="words">
+                            {% for word, flag in seg_list %}
+                                <dd class="{{ flag }}">{{ word }}</dd>
+                            {% endfor %}
+                        </dl>
+                    </div>
+                    <div class="col-xs-3">
+                        <dl class="words">
+                            <dd class="v">动词</dd>
+                            <dd class="i">时间词</dd>
+                            <dd class="d">副词</dd>
+                            <dd class="p">介词</dd>
+                            <dd class="ns">地名</dd>
+                            <dd class="x">标点符号</dd>
+                            <dd class="m">数量词</dd>
+                            <dd class="uj">助词</dd>
+                            <dd class="n">名词</dd>
+                            <dd class="f">方位词</dd>
+                            <dd class="eng">字符串</dd>
+                            <dd class="c">连词</dd>
+                            <dd class="t">时间词</dd>
+                            <dd class="r">代词</dd>
+                            <dd class="a">形容词</dd>
+                            <dd class="ul">语气词</dd>
+                            <dd class="nr">人名</dd>
+                            <dd class="ns">地名</dd>
+                            <dd class="nt">机构名</dd>
+                            <dd class="nz">专有名词</dd>
+                            <dd class="l">习用语</dd>
+                        </dl>
+                    </div>
+                </div>
+
+            </div>
+            <div class="chunk" id="section-2">
+                <div class="col-xs-12">
+                    <div class="title">
+                        实体识别
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-9">
+                        <dl class="words">
+                            {% for word, flag in seg_list %}
+                                <dd class="{% if flag == 'nr' or flag == 'ns' or flag == 'nt' or flag == 'nz' or flag == 'nrfg' %}
+                                {{ flag }}
+                                {% else %}
+                                x
+                                {% endif %}">{{ word }}</dd>
+                            {% endfor %}
+                        </dl>
+                    </div>
+                    <div class="col-xs-3">
+                        <dl class="words">
+                            <dd class="nr">人名</dd>
+                            <dd class="ns">地名</dd>
+                            <dd class="nt">机构名</dd>
+                            <dd class="nz">专有名词</dd>
+
+                        </dl>
+                    </div>
+                </div>
+
+            </div>
+            <div class="chunk" id="section-3">
+                <div class="col-xs-12">
+                    <table class="table">
+                        <caption>textrank算法提取特征</caption>
+                        <thead>
+                        <tr>
+                            <th>关键词</th>
+                            <th>权重</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for keyword, value in textrank_key_list %}
+                            <tr>
+                                <td>{{ keyword }}</td>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="chunk" id="section-4">
+                <table class="table">
+                    <caption>tf-idf算法提取特征</caption>
+                    <thead>
+                    <tr>
+                        <th>关键词</th>
+                        <th>权重</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for keyword, value in tf_idf_key_list %}
+                        <tr>
+                            <td>{{ keyword }}</td>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="chunk" id="section-5">
+                    <div id="charts" style="min-width:400px;height:400px"></div>
+            </div>
+{#            <div class="chunk" id="section-6">#}
+{#                <div class="col-xs-12">#}
+{#                    <div class="title">#}
+{#                        自动摘要#}
+{#                    </div>#}
+{##}
+{#                </div>#}
+{#                {% for s in summary %}#}
+{#                    {{ s }},#}
+{#                {% endfor %}.#}
+{##}
+{#            </div>#}
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="https://cdn.hcharts.cn/highcharts/highcharts-3d.js"></script>
+<script>
+$(function () {
+    $('#charts').highcharts({
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45
+            }
+        },
+        title: {
+            text: '情感分析'
+        },
+        tooltip: {
+            headerFormat: '{series.name}<br>',
+            pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                innerSize: 100,
+                depth: 45,
+
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    },
+
+                },
+                showInLegend: true
+
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: '情感分析',
+            data: [
+                {
+                    name: '正面指数',
+                    y: {{ sentiment_score_up }},
+                    sliced: true,
+                    selected: true,
+                    color: '#f16e42',
+                },
+                {
+                    name: '负面指数',
+                    y: {{ sentiment_score_down }},
+                    color: '#488fce',
+
+                },
+            ]
+        }]
+    });
+});
+</script>
+</body>
+</html>
