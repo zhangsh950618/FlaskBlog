@@ -9,6 +9,10 @@
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
     <link href="{{ url_for('static', filename = 'favicon.ico') }}" rel="shortcut icon">
+    <script src="https://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+    <script src="https://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="https://cdn.hcharts.cn/highcharts/highcharts-3d.js"></script>
+
     <title>graduation</title>
 
     <style>
@@ -120,10 +124,10 @@
                     <a href="#section-1">热点博客</a>
                 </li>
                 <li>
-                    <a href="#section-4">核心事件</a>
+                    <a href="#section-2">核心事件</a>
                 </li>
                 <li>
-                    <a href="#section-6">评论分析</a>
+                    <a href="#section-3">评论分析</a>
                 </li>
             </ul>
         </div>
@@ -136,9 +140,9 @@
                     <tr>
                         <th style='text-align: center;'>作者</th>
                         <th style='text-align: center;'>微博正文</th>
-                        <th style='text-align: center;'>点赞量</th>
-                        <th style='text-align: center;'>转发量</th>
-                        <th style='text-align: center;'>评论量</th>
+                        <th style='text-align: center;width:8%'>点赞量</th>
+                        <th style='text-align: center;width:8%'>转发量</th>
+                        <th style='text-align: center;width:8%'>评论量</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -157,11 +161,11 @@
                 </table>
             </div>
             <div class="chunk" id="section-1">
-
+                <div id="container" style="height: 600px"></div>
                 <img src=" {{ url_for('static', filename = 'pic/所有博客热度.png') }} ">
                 <img src=" {{ url_for('static', filename = 'pic/半径为2500的热点.png') }} ">
             </div>
-            <div class="chunk" id="section-4">
+            <div class="chunk" id="section-2">
                 <table class="table">
                     <thead>
                     <tr>
@@ -183,12 +187,131 @@
                     </tbody>
                 </table>
             </div>
-            <div class="chunk" id="section-2">
-                <div id="linechart"></div>
+            <div class="chunk" id="section-3">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th style='text-align: center;'>评论内容</th>
+                        <th style='text-align: center; width:12%'>情感取向</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for comment_info, score in comments_data %}
+                        <tr>
+                            <td>{{ comment_info }}</td>
+                            <td style='text-align: center;'>{{ score }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
 </body>
+
+<script>
+    $(function () {
+    // Give the points a 3D feel by adding a radial gradient
+    Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function (color) {
+        return {
+            radialGradient: {
+                cx: 0.4,
+                cy: 0.3,
+                r: 0.5
+            },
+            stops: [
+                [0, color],
+                [1, Highcharts.Color(color).brighten(-0.2).get('rgb')]
+            ]
+        };
+    });
+    // Set up the chart
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container',
+            margin: 100,
+            type: 'scatter',
+            options3d: {
+                enabled: true,
+                alpha: 10,
+                beta: 30,
+                depth: 250,
+                viewDistance: 5,
+                frame: {
+                    bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
+                    back: { size: 1, color: 'rgba(0,0,0,0.04)' },
+                    side: { size: 1, color: 'rgba(0,0,0,0.06)' }
+                }
+            }
+        },
+        title: {
+            text: '3D散点图'
+        },
+        subtitle: {
+            text: '单击并拖动鼠标可旋转绘图区'
+        },
+        plotOptions: {
+            scatter: {
+                width: 10,
+                height: 10,
+                depth: 10
+            }
+        },
+        yAxis: {
+            min: 0,
+            max: 5,
+            title: null
+        },
+        xAxis: {
+            min: 0,
+            max: 2.5,
+            gridLineWidth: 1
+        },
+        zAxis: {
+            min: 0,
+            max: 5
+        },
+        legend: {
+            enabled: false
+        },
+        series: [{
+            name: '随机数据',
+            colorByPoint: true,
+            data: {{ data }}
+        }]
+    });
+    // Add mouse events for rotation
+    $(chart.container).bind('mousedown.hc touchstart.hc', function (e) {
+        e = chart.pointer.normalize(e);
+        var posX = e.pageX,
+            posY = e.pageY,
+            alpha = chart.options.chart.options3d.alpha,
+            beta = chart.options.chart.options3d.beta,
+            newAlpha,
+            newBeta,
+            sensitivity = 5; // lower is more sensitive
+        $(document).bind({
+            'mousemove.hc touchdrag.hc': function (e) {
+                // Run beta
+                newBeta = beta + (posX - e.pageX) / sensitivity;
+                newBeta = Math.min(100, Math.max(-100, newBeta));
+                chart.options.chart.options3d.beta = newBeta;
+                // Run alpha
+                newAlpha = alpha + (e.pageY - posY) / sensitivity;
+                newAlpha = Math.min(100, Math.max(-100, newAlpha));
+                chart.options.chart.options3d.alpha = newAlpha;
+                chart.redraw(false);
+            },
+            'mouseup touchend': function () {
+                $(document).unbind('.hc');
+            }
+        });
+    });
+});
+
+</script>
 </html>

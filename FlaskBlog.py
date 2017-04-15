@@ -261,12 +261,23 @@ def single():
 @app.route('/multi', methods=['GET', 'POST'])
 def multi():
     b_dao = BlogDao()
-    blogs = b_dao.search_blogs_with_limit(["郑爽"], 10)
-    data = [[int(blog[5]), int(blog[6]), int(blog[7])] for blog in b_dao.search_blogs_with_limit(["郑爽"], 200)]
+    blogs = b_dao.search_blogs_with_limit(["郑爽"], 15)
+    data = [[int(blog[5]), int(blog[6]), int(blog[7])] for blog in b_dao.search_blogs_with_limit(["Yeah虚拟小号"], 200)]
+    blog = blogs[0]
+    blog_id = blog[0]
+    c_dao = CommentDao()
+    comments = c_dao.search_all_comments_with_ids([blog_id])
+    comments_data = []
+    senti = Sentiment()
+    for comment in comments:
+        score = senti.single_review_sentiment_score(comment[3])
+        comments_data.append((comment[3], score))
 
     return render_template("multi.html",
                            blogs=blogs,
-                           data=data, )
+                           data=data,
+                           comments_data=comments_data
+                           )
 
 
 @app.route('/topic1', methods=['GET', 'POST'])
@@ -298,7 +309,8 @@ def topic1():
         post_times.append(str(most_hot_blog.get_post_time()))
         print most_hot_blog.get_post_time(), most_hot_blog.get_blog_info(), scores[index]
         # print type(str(most_hot_blog.get_blog_info()))
-        linechartdata.append({'info': most_hot_blog.get_blog_info(), 'y': scores[index]})
+        linechartdata.append(
+            {'author': most_hot_blog.get_author(), 'info': most_hot_blog.get_blog_info(), 'y': scores[index]})
     linechartdata = str(linechartdata).replace('u\'', '\'').decode("unicode-escape")
     topic_name = "郑爽"
     return render_template("topic1.html",
